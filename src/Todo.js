@@ -14,14 +14,14 @@ const Todo = () => {
     setInput('')
   }
 
-  const handleDelete = (id)=>{
-    
+  const handleDelete = (id) => {
+
   }
 
   const listTodo = todos.map((item) => {
     const { id, todo } = item
     return (
-      <li key={id} onClick={()=>handleDelete(id)}>{todo}</li>
+      <li key={id} onClick={() => handleDelete(id)}>{todo}</li>
     )
   })
 
@@ -34,7 +34,7 @@ const Todo = () => {
           e.preventDefault()
           setInput(e.target.value)
         }} />
-        <button disabled={disabledButton} >Submit</button>
+        <button disabled={disabledButton}>Submit</button>
       </form>
       <p>
         <ul>
