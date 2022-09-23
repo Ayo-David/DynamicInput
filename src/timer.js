@@ -1,8 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react'
+import { Switch, Route, Link, useRouteMatch } from 'react-router-dom'
+import SearchEngine from './SearchEngline'
+import Todo from './Todo'
 
 export default function Timer() {
     const timerId = useRef(0)
     const [count, setCount] = useState(0)
+
+    const { path } = useRouteMatch()
 
     const startCounter = () => {
         if (timerId.current) return
@@ -39,12 +44,33 @@ export default function Timer() {
     }, [count]);
 
     return (
-        <div className="timer">
-            <h1>Timer {count}</h1>
-            <button onClick={startCounter}>Start</button>
-            <button onClick={stopCounter} style={{ marginLeft: '20px' }}>Stop</button>
-            <button onClick={() => resetCounter()} style={{ marginLeft: '20px' }}>Reset</button>
-        </div >
+
+        <Switch>
+            {/* <Route path={`${path}/`}>
+                <div className="timer">
+
+                    <h1>Timer {count}</h1>
+
+                    <nav>
+                        <ul>
+                            <li><Link to={`${path}/searchme`}>Search</Link></li>
+
+                        </ul>
+                    </nav>
+                    <button onClick={startCounter}>Start</button>
+                    <button onClick={stopCounter} style={{ marginLeft: '20px' }}>Stop</button>
+                    <button onClick={() => resetCounter()} style={{ marginLeft: '20px' }}>Reset</button>
+                </div >
+            </Route> */}
+            <Route path={`${path}/searchme`} >
+                <SearchEngine />
+            </Route>
+            <Route path={`${path}/todo`} >
+                <Todo />
+            </Route>
+        </Switch >
+
+
     )
 }
 

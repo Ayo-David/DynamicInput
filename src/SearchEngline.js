@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { books } from './books'
+import Todo from './Todo'
+import OrderList from './OrderList'
+import { useLocation } from 'react-router-dom'
 
 const SearchEngine = () => {
+
     const [searchSuggestion, setSearchSuggestion] = useState([])
     const [thebooks, setThebooks] = useState(books)
+    const [inputText, setInputText] = useState('')
+
+    const { search } = useLocation()
+    const match = search.match(/type=(.*)/)
+    const type = match?.[1]
 
     const fields = ['authour', 'title', 'country', 'language', 'year'];
 
@@ -14,41 +23,80 @@ const SearchEngine = () => {
         author: "",
         country: "",
         language: "",
-        pages: 0,
+        pages: "",
         title: "",
-        year: 0
+        year: ""
     })
 
     const handleChange = (e) => {
-        const inputText = e.target.name
+        const field = e.target.name
         const valueText = e.target.value
         console.log(valueText)
         setInput({
             ...input,
             [e.target.name]: e.target.value
         })
+        setInputText(field)
 
-        const upperCase = valueText.toUpperCase()
+        //const upperCase = valueText.toUpperCase()
 
         //searchSuggestion.length === 0 && setSearchSuggestion([...books])
 
-        const suggested = thebooks.filter(({ author, country, language, pages, title, year }) => {
-            if (inputText === 'author') {
-                return author.toLowerCase().indexOf(valueText.toLowerCase()) > -1
-            } else if (inputText === 'country') {
-                return country.toLowerCase().indexOf(valueText.toLowerCase()) > -1
-            } else {
-                return language.toLowerCase().indexOf(valueText.toLowerCase()) > -1
-            }
-
-        }
-        )
-        setSearchSuggestion(suggested)
-        setThebooks(suggested)
         //console.log('found',)
+        // handleSearch()
     }
 
+    const handleSearch = useMemo(() => {
+        const suggested = thebooks.filter(({ author, country, language, pages, title, year }) =>  {
+            if (inputText === 'author') {
+                if (input.author !== '')
+                    return author.toLowerCase().indexOf(input.author.toLowerCase()) > -1
+            } else if (inputText === 'country') {
+                if (input.country !== '')
+                    return country.toLowerCase().indexOf(input.country.toLowerCase()) > -1
+            } else if (inputText === 'language') {
+                if (input.language !== '')
+                    return language.toLowerCase().indexOf(input.language.toLowerCase()) > -1
+            } else if (inputText === 'pages') {
+                //let arrayPages = [pages]
+                //console.log(`arrayPages = `, arrayPages)
+                if (input.pages !== '')
+                    return pages === parseInt(input.pages)
+            } else if (inputText === 'title') {
+                if (input.title !== '')
+                    return title.toLowerCase().indexOf(input.title.toLowerCase()) > -1
+            } else if (inputText === 'year') {
+                if (input.year !== '')
+                    return year === parseInt(input.year)
+            }
+        }, [inputText, input])
+
+        console.log(`suggested = `, suggested)
+        setSearchSuggestion(suggested)
+        //setThebooks(suggested)
+    }, [inputText, input, thebooks])
+
     useEffect(() => {
+        //handleSearch()
+        //setThebooks(searchSuggestion)
+        // if (input.author === "" && input.country === "" && input.title === "") {
+        //     setThebooks(books)
+        // } else {
+
+        //     setThebooks(suggested)
+        // }
+
+    }, [searchSuggestion])
+
+
+
+    useEffect(() => {
+        // if (input.author === "" && input.country === "" && input.title === "") {
+        //     setThebooks(books)
+        // } else {
+
+        //     setThebooks(searchSuggestion)
+        // }
         //console.log(input.title)
         //setSearchSuggestion([...books])
 
@@ -59,11 +107,15 @@ const SearchEngine = () => {
         //     return a;
         // }, {})
 
-    }, [])
+    }, [input])
 
     return (
         <div>
             <h1>Search for Books</h1>
+            {
+                type === 'order' ? <OrderList /> :
+                    type === 'todo' && <Todo />
+            }
             <SearchInput title="author" value={input.author} onChange={handleChange} />
             <SearchInput title="country" value={input.country} onChange={handleChange} />
             <SearchInput title="language" value={input.language} onChange={handleChange} />

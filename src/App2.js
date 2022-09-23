@@ -6,6 +6,8 @@ import {
     Link
 } from "react-router-dom";
 
+
+
 //import DynamicInput from './DynamicInput';
 import './App.css';
 import SearchEngine from './SearchEngline';
@@ -13,6 +15,7 @@ import FocusUseRef from './Focus_useRef';
 import Timer from './timer';
 import OrderList from './OrderList';
 import Todo from './Todo';
+import BookSearch from './BookSearch';
 
 
 function App() {
@@ -65,7 +68,12 @@ function App() {
 
             setMyinput(theinput)
         }
-        myfocus.current[newPosition].focus()
+        if (id === 0) {
+            myfocus.current[id].focus()
+        } else {
+
+            myfocus.current[newPosition].focus()
+        }
         // console.log(myfocus.current[newPosition])
 
     }
@@ -112,6 +120,8 @@ function App() {
         //console.log(el)
     }
 
+
+
     useEffect(() => {
         //this it doesn’t invoke the callback after initial rendering
         //until myfocus has values
@@ -126,11 +136,30 @@ function App() {
 
     return (
         <Router>
+            {/* the links islikeheaderit appearson all pages and it should
+            be before the Switch of router */}
+            <nav>
+                <ul>
+                    <li><Link to='/'>Home</Link></li>
+                    <li><Link to='/search'>Search</Link></li>
+                    {/* Using type from useParams  */}
+                    <li><Link to='/booksearch/focus'>Focus</Link></li>
 
+                    <li><Link to='/timer'>Timer</Link></li>
+                    <li><Link to='/timer/searchme'>Timer Search</Link></li>
+                    <li><Link to='/timer/todo'>Timer Todo </Link></li>
+
+                    <li><Link to='/booksearch'>BookSearch</Link></li>
+                    {/* using ? and search parameters for conditional rendering */}
+                    <li><Link to='/search?type=order'>Order</Link></li>
+                    <li><Link to='/search?type=todo'>Todo</Link></li>
+                </ul>
+            </nav>
             <Switch>
                 <Route path='/' exact>
                     <div className="dynamicinput">
                         <h1>This is a dynamic Input System</h1>
+
                         <button onClick={() => addInput(myinput.length)}>+</button>
                         {
                             myinput.map((input, i) => <DynamicInput
@@ -150,11 +179,22 @@ function App() {
                 <Route path="/timer">
                     <Timer />
                 </Route>
+                <Route path="/timer/searchme">
+                    <SearchEngine />
+                </Route>
                 <Route path='/focus'>
                     <FocusUseRef />
                 </Route>
                 <Route path='/search'>
                     <SearchEngine />
+                </Route>
+                {/* To have sublinks in the booksearch */}
+                <Route path='/booksearch/:type' >
+                    <BookSearch />
+                </Route>
+                {/* For Exact Component */}
+                <Route path='/booksearch' exact >
+                    <BookSearch />
                 </Route>
                 <Route path='/order'>
                     <OrderList />
