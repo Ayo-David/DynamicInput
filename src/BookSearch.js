@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 //import BookSearch from "./BookSearch";
-import BookSearchs from "./SearchDynamic";
+import BookSearchs from "./SearchDynamic";//this implements class component
 import './bookstyle.css'
 import { useParams } from 'react-router-dom'
 import Focus from "./Focus_useRef";
@@ -66,6 +66,7 @@ const BookSearch = props => {
       {type === 'focus' && <Focus />}
       <br />
       <BookSearchs books={books} />
+
     </div>
   );
 }
